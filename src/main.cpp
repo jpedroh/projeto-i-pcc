@@ -1,10 +1,6 @@
 #include <getopt.h>
 #include <iostream>
-
-int num = -1;
-bool is_beep = false;
-float sigma = 2.034;
-std::string write_file = "default_file.txt";
+#include <vector>
 
 struct pmt_options
 {
@@ -13,6 +9,8 @@ struct pmt_options
     std::string algorithm_name;
     bool is_count;
     bool is_help;
+    std::string pattern;
+    std::vector<std::string> files;
 };
 
 void PrintHelp()
@@ -34,27 +32,34 @@ pmt_options ProcessArgs(int argc, char **argv)
         {"algorithm", required_argument, nullptr, 'a'},
         {"count", required_argument, nullptr, 'c'},
         {"help", no_argument, nullptr, 'h'}};
-    struct pmt_options options;
+    struct pmt_options options = {0, "", "", false, false, ""};
+
+    int args = 1;
 
     while (true)
     {
         const auto opt = getopt_long(argc, argv, short_opts, long_opts, nullptr);
-
         if (-1 == opt)
+        {
             break;
+        }
 
         switch (opt)
         {
         case 'e':
+            args += 2;
             options.edit = std::stoi(optarg);
             break;
         case 'p':
+            args += 2;
             options.pattern_file = optarg;
             break;
         case 'a':
+            args += 2;
             options.algorithm_name = optarg;
             break;
         case 'c':
+            args += 1;
             options.is_count = true;
             break;
         case 'h':
@@ -63,6 +68,17 @@ pmt_options ProcessArgs(int argc, char **argv)
             options.is_help = true;
             break;
         }
+    }
+
+    if (options.pattern_file == "")
+    {
+        options.pattern = argv[args];
+        args++;
+    }
+
+    for (int i = args; i < argc; i++)
+    {
+        options.files.push_back(argv[i]);
     }
 
     return options;
