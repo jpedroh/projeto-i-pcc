@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <glob.h>
+#include <fstream>
 
 struct pmt_options
 {
@@ -16,11 +17,11 @@ struct pmt_options
 
 void PrintHelp()
 {
-    std::cout << "-e,--edit: Localiza todas as ocorrencias aproximadas do padrão a uma distância de edição máxima\n"
-                 "--beep:              Beep the user\n"
-                 "--sigma <val>:       Set sigma of program\n"
-                 "--writeFile <fname>: File to write to\n"
-                 "--help:              Show help\n";
+    std::cout << "-e,--edit:\tLocaliza todas as ocorrencias aproximadas do padrão a uma distância de edição máxima\n"
+                 "-p, --pattern patternfile:\tRealiza a busca de todos os padroes contidos no arquivo pattern-file.\n"
+                 "-a, --algorithm algorithm name:\tRealiza a busca de padroes usando o algoritmo.\n"
+                 "-c, --count:\tImprime apenas a quantidade total de ocorrencias do(s) padrão(ões) contidas no(s) arquivo(s) de texto.\n"
+                 "--help:\tShow help\n";
     exit(1);
 }
 
@@ -104,11 +105,31 @@ pmt_options ProcessArgs(int argc, char **argv)
     return options;
 }
 
+std::vector<std::string> get_patterns_from_options(pmt_options options)
+{
+    std::vector<std::string> patterns;
+    if (options.pattern_file == "")
+    {
+        patterns.emplace_back(options.pattern);
+    }
+    else
+    {
+        std::ifstream file(options.pattern_file);
+        std::string line;
+        for (std::string line; std::getline(file, line);)
+        {
+            patterns.emplace_back(line);
+        }
+    }
+    return patterns;
+}
+
 int main(int argc, char **argv)
 {
-    auto args = ProcessArgs(argc, argv);
+    auto options = ProcessArgs(argc, argv);
+    auto patterns = get_patterns_from_options(options);
 
-    if (args.is_help)
+    if (options.is_help)
     {
         PrintHelp();
         return 1;
