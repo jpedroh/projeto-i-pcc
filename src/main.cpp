@@ -1,6 +1,7 @@
 #include <getopt.h>
 #include <iostream>
 #include <vector>
+#include <glob.h>
 
 struct pmt_options
 {
@@ -21,6 +22,24 @@ void PrintHelp()
                  "--writeFile <fname>: File to write to\n"
                  "--help:              Show help\n";
     exit(1);
+}
+
+std::vector<std::string> parse_files_from_glob(std::string pattern)
+{
+    glob_t globbuf;
+    int err = glob(pattern.c_str(), 0, NULL, &globbuf);
+    std::vector<std::string> files;
+    if (err == 0)
+    {
+        for (size_t i = 0; i < globbuf.gl_pathc; i++)
+        {
+            files.emplace_back(globbuf.gl_pathv[i]);
+        }
+
+        globfree(&globbuf);
+    }
+
+    return files;
 }
 
 pmt_options ProcessArgs(int argc, char **argv)
@@ -78,7 +97,8 @@ pmt_options ProcessArgs(int argc, char **argv)
 
     for (int i = args; i < argc; i++)
     {
-        options.files.push_back(argv[i]);
+        auto files = parse_files_from_glob(argv[i]);
+        options.files.insert(options.files.end(), files.begin(), files.end());
     }
 
     return options;
