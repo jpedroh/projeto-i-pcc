@@ -3,6 +3,7 @@
 #include <vector>
 #include <glob.h>
 #include <fstream>
+#include "sliding_window.h"
 
 struct pmt_options
 {
@@ -127,12 +128,40 @@ std::vector<std::string> get_patterns_from_options(pmt_options options)
 int main(int argc, char **argv)
 {
     auto options = ProcessArgs(argc, argv);
-    auto patterns = get_patterns_from_options(options);
-
     if (options.is_help)
     {
         PrintHelp();
         return 1;
+    }
+
+    auto patterns = get_patterns_from_options(options);
+
+    // Faz a busca efetivamente
+    std::vector<std::string> lines;
+    int count = 0;
+
+    for (auto file_name : options.files)
+    {
+        std::ifstream file(file_name);
+        std::string line;
+        for (std::string line; std::getline(file, line);)
+        {
+            auto line_occurrences = sliding_window(patterns[0], line);
+            count += line_occurrences.size();
+            if (line_occurrences.size() > 0)
+                lines.push_back(line);
+        }
+    }
+
+    if (options.is_count)
+    {
+        std::cout << count << std::endl;
+        return 0;
+    }
+
+    for (auto line : lines)
+    {
+        std::cout << line << std::endl;
     }
 
     return 0;
