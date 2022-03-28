@@ -1,23 +1,33 @@
-std::vector<int> sliding_window(std::string pattern, std::string text)
-{
-  std::vector<int> occurrences;
-  int m = pattern.size();
-  int n = text.size();
+#include <algorithm.h>
+#include <vector>
+#include <string>
 
-  for (int i = 0; i < n - m + 1; i++)
+class SlidingWindow : public Algorithm
+{
+public:
+  void initialize(std::vector<std::string> patterns, int max_error){};
+  std::vector<int> search(std::vector<std::string> patterns, std::string text, int max_error)
   {
-    for (int j = 0; j < m; j++)
+    auto pattern = patterns.at(0);
+    std::vector<int> occurrences;
+    int m = pattern.size();
+    int n = text.size();
+
+    for (int i = 0; i < n - m + 1; i++)
     {
-      if (pattern[j] != text[j + i])
+      for (int j = 0; j < m; j++)
       {
-        break;
-      }
-      else if (j == m - 1)
-      {
-        occurrences.push_back(i);
+        if (pattern[j] != text[j + i])
+        {
+          break;
+        }
+        else if (j == m - 1)
+        {
+          occurrences.push_back(i);
+        }
       }
     }
-  }
 
-  return occurrences;
-}
+    return occurrences;
+  }
+};

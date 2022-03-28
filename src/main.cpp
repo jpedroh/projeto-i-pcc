@@ -4,6 +4,7 @@
 #include <glob.h>
 #include <fstream>
 #include "sliding_window.h"
+#include <memory>
 
 struct pmt_options
 {
@@ -125,6 +126,13 @@ std::vector<std::string> get_patterns_from_options(pmt_options options)
     return patterns;
 }
 
+std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options)
+{
+    auto sliding_window = std::make_unique<SlidingWindow>();
+
+    return sliding_window;
+}
+
 int main(int argc, char **argv)
 {
     auto options = ProcessArgs(argc, argv);
@@ -135,21 +143,23 @@ int main(int argc, char **argv)
     }
 
     auto patterns = get_patterns_from_options(options);
+    auto algorithm = get_search_algorithm_from_options(options);
 
     // Faz a busca efetivamente
     std::vector<std::string> lines;
     int count = 0;
-
+    algorithm->initialize(patterns, options.edit);
     for (auto file_name : options.files)
     {
         std::ifstream file(file_name);
         std::string line;
         for (std::string line; std::getline(file, line);)
         {
-            auto line_occurrences = sliding_window(patterns[0], line);
+            auto line_occurrences = algorithm->search(patterns, line, options.edit);
             count += line_occurrences.size();
-            if (line_occurrences.size() > 0)
+            if (line_occurrences.size() > 0) {
                 lines.push_back(line);
+            }
         }
     }
 
