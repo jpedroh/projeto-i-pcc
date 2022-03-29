@@ -4,6 +4,7 @@
 #include <glob.h>
 #include <fstream>
 #include "sliding_window.h"
+#include "sellers.h"
 #include <memory>
 
 struct pmt_options
@@ -128,9 +129,16 @@ std::vector<std::string> get_patterns_from_options(pmt_options options)
 
 std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options)
 {
-    auto sliding_window = std::make_unique<SlidingWindow>();
+    if (options.algorithm_name == "sliding_window")
+    {
+        return std::make_unique<SlidingWindow>();
+    }
+    else if (options.algorithm_name == "sellers")
+    {
+        return std::make_unique<Sellers>();
+    }
 
-    return sliding_window;
+    return std::make_unique<SlidingWindow>();
 }
 
 int main(int argc, char **argv)
