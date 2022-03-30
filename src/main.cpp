@@ -6,6 +6,7 @@
 #include "sliding_window.h"
 #include "sellers.h"
 #include "shift_or.h"
+#include "kmp.h"
 #include <memory>
 
 struct pmt_options
@@ -141,6 +142,10 @@ std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options
     else if (options.algorithm_name == "shift_or")
     {
         return std::make_unique<ShiftOr>();
+    }
+    else if (options.algorithm_name == "kmp")
+    {
+        return std::make_unique<KMP>();
     }
 
     return std::make_unique<SlidingWindow>();
