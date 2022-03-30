@@ -7,6 +7,7 @@
 #include "sellers.h"
 #include "shift_or.h"
 #include "kmp.h"
+#include "aho_corasick.h"
 #include <memory>
 
 struct pmt_options
@@ -146,6 +147,10 @@ std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options
     else if (options.algorithm_name == "kmp")
     {
         return std::make_unique<KMP>();
+    }
+    else if (options.algorithm_name == "aho_corasick")
+    {
+        return std::make_unique<AhoCorasick>();
     }
 
     return std::make_unique<SlidingWindow>();
