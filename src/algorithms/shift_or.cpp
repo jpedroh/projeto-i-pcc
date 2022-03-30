@@ -10,7 +10,7 @@ using namespace std;
 auto build_char_mask(string pattern)
 {
   int m = pattern.size();
-  vector<std::bitset<10>> char_mask;
+  vector<std::bitset<1024>> char_mask;
   char_mask.resize(128);
   fill(char_mask.begin(), char_mask.end(), ~(0b0 << m));
 
@@ -22,13 +22,13 @@ auto build_char_mask(string pattern)
   return char_mask;
 }
 
-vector<int> shift_or(string pattern, string text, vector<std::bitset<10>> C)
+vector<int> shift_or(string pattern, string text, vector<std::bitset<1024>> C)
 {
   vector<int> occurrences;
   int m = pattern.size();
   int n = text.size();
 
-  std::bitset<10> S;
+  std::bitset<1024> S;
   S = ~(0b0 << (m - 1));
 
   for (int i = 0; i < n; i++)

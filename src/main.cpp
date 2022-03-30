@@ -164,9 +164,13 @@ int main(int argc, char **argv)
         for (std::string line; std::getline(file, line);)
         {
             auto line_occurrences = algorithm->search(patterns, line, options.edit);
-            count += line_occurrences.size();
-            if (line_occurrences.size() > 0) {
-                lines.push_back(line);
+            for (auto pattern_occurences : line_occurrences)
+            {
+                count += pattern_occurences.size();
+                if (pattern_occurences.size() > 0)
+                {
+                    lines.push_back(line);
+                }
             }
         }
     }

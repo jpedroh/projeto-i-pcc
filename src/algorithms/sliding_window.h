@@ -6,7 +6,7 @@ class SlidingWindow : public Algorithm
 {
 public:
   void initialize(std::vector<std::string> patterns, int max_error){};
-  std::vector<int> search(std::vector<std::string> patterns, std::string text, int max_error)
+  std::vector<std::vector<int>> search(std::vector<std::string> patterns, std::string text, int max_error)
   {
     auto pattern = patterns.at(0);
     std::vector<int> occurrences;
@@ -28,6 +28,9 @@ public:
       }
     }
 
-    return occurrences;
+    auto response = std::vector<std::vector<int>>();
+    response.resize(1);
+    response[0] = occurrences;
+    return response;
   }
 };
