@@ -6,19 +6,18 @@
 class ShiftOr : public Algorithm
 {
 private:
-  std::vector<std::bitset<1024>> char_mask;
+  std::vector<unsigned long long> char_mask;
 
 public:
   void initialize(std::vector<std::string> patterns, int max_error)
   {
     auto pattern = patterns.at(0);
     int m = pattern.size();
-    this->char_mask.resize(128);
-    fill(this->char_mask.begin(), this->char_mask.end(), ~(0b0 << m));
+    this->char_mask = std::vector<unsigned long long>(128, ~0);
 
     for (int j = 0; j < m; j++)
     {
-      this->char_mask[pattern[j]][j] = 0;
+      this->char_mask[pattern[j]] &= ~(1 << j);
     }
   };
 
@@ -29,13 +28,12 @@ public:
     int m = pattern.size();
     int n = text.size();
 
-    std::bitset<1024> S;
-    S = ~(0b0 << (m - 1));
+    unsigned long long S = ~(0 << m);
 
     for (int i = 0; i < n; i++)
     {
       S = (S << 1) | this->char_mask[text[i]];
-      if (S[m - 1] == 0)
+      if (!(S&(1<<m-1)))
       {
         occurrences.push_back(i + 1 - m);
       }
