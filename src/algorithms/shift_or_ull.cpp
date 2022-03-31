@@ -10,29 +10,28 @@ using namespace std;
 auto build_char_mask(string pattern)
 {
   int m = pattern.size();
-  vector<std::bitset<1024>> char_mask(128, ~(0b0 << m));
+  vector<unsigned long long> char_mask(128, ~(0));
 
   for (int j = 0; j < m; j++)
   {
-    char_mask[pattern[j]][j] = 0;
+    char_mask[pattern[j]] &= ~(1 << j);
   }
 
   return char_mask;
 }
 
-vector<int> shift_or(string pattern, string text, vector<std::bitset<1024>> C)
+vector<int> shift_or(string pattern, string text, vector<unsigned long long> C)
 {
   vector<int> occurrences;
   int m = pattern.size();
   int n = text.size();
 
-  std::bitset<1024> S;
-  S = ~(0b0 << (m - 1));
+  unsigned long long S = ~(0 << m);
 
   for (int i = 0; i < n; i++)
   {
     S = (S << 1) | C[text[i]];
-    if (S[m - 1] == 0)
+    if (!(S&(1<<m-1)))
     {
       occurrences.push_back(i + 1 - m);
     }
@@ -43,6 +42,7 @@ vector<int> shift_or(string pattern, string text, vector<std::bitset<1024>> C)
 
 int main(int argc, char *argv[])
 {
+  time_t start, end;
   string pattern = argv[1];
   string line;
   ifstream file(argv[2]);
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     auto occurrences = shift_or(pattern, line, char_mask);
     if (!occurrences.empty())
     {
-      cout << line << endl;
+      cout << line << '\n';
     }
   }
 
