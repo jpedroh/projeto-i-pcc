@@ -9,7 +9,10 @@
 #include "kmp.h"
 #include "aho_corasick.h"
 #include "wu_manber.h"
+#include <iterator>
 #include <memory>
+#include <algorithm>
+#include <sstream>
 
 struct pmt_options
 {
@@ -186,17 +189,17 @@ int main(int argc, char **argv)
     for (auto file_name : options.files)
     {
         std::ifstream file(file_name);
-        std::string line;
-        for (std::string line; std::getline(file, line);)
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+
+        std::string line = buffer.str();
+        auto line_occurrences = algorithm->search(patterns, line, options.edit);
+        for (auto pattern_occurences : line_occurrences)
         {
-            auto line_occurrences = algorithm->search(patterns, line, options.edit);
-            for (auto pattern_occurences : line_occurrences)
+            count += pattern_occurences.size();
+            if (pattern_occurences.size() > 0)
             {
-                count += pattern_occurences.size();
-                if (pattern_occurences.size() > 0)
-                {
-                    lines.push_back(line);
-                }
+                lines.push_back(line);
             }
         }
     }
