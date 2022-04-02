@@ -13,11 +13,11 @@ public:
   {
     auto pattern = patterns.at(0);
     int m = pattern.size();
-    this->char_mask = std::vector<unsigned long long>(128, ~0);
+    this->char_mask = std::vector<unsigned long long>(128, ~0LLU);
 
     for (int j = 0; j < m; j++)
     {
-      this->char_mask[pattern[j]] &= ~(1 << j);
+      this->char_mask[pattern[j]] &= ~(1LLU << j);
     }
   };
 
@@ -28,7 +28,7 @@ public:
     int m = pattern.size();
     int n = text.size();
 
-    std::vector<unsigned long long> S(1, ~0);
+    std::vector<unsigned long long> S(1, ~0LLU);
 
     for(int q = 1; q < max_error+1; q++)
     {
@@ -47,7 +47,7 @@ public:
         
         S = auxS;
         
-        if (!(S[max_error]&(1<<m-1)))
+        if (!(S[max_error]&(1LLU<<m-1)))
         {
           occurrences.push_back(i);
         }
