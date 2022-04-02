@@ -12,7 +12,6 @@
 #include <iterator>
 #include <memory>
 #include <algorithm>
-#include <sstream>
 
 struct pmt_options
 {
@@ -189,17 +188,17 @@ int main(int argc, char **argv)
     for (auto file_name : options.files)
     {
         std::ifstream file(file_name);
-        std::stringstream buffer;
-        buffer << file.rdbuf();
-
-        std::string line = buffer.str();
-        auto line_occurrences = algorithm->search(patterns, line, options.edit);
-        for (auto pattern_occurences : line_occurrences)
+        std::string line;
+        while (getline(file, line))
         {
-            count += pattern_occurences.size();
-            if (pattern_occurences.size() > 0)
+            auto line_occurrences = algorithm->search(patterns, line, options.edit);
+            for (auto pattern_occurences : line_occurrences)
             {
-                lines.push_back(line);
+                count += pattern_occurences.size();
+                if (pattern_occurences.size() > 0)
+                {
+                    lines.push_back(line);
+                }
             }
         }
     }
