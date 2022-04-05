@@ -28,9 +28,16 @@ void PrintHelp()
 {
     std::cout << "-e,--edit:\tLocaliza todas as ocorrencias aproximadas do padrão a uma distância de edição máxima\n"
                  "-p, --pattern patternfile:\tRealiza a busca de todos os padroes contidos no arquivo pattern-file.\n"
-                 "-a, --algorithm algorithm name:\tRealiza a busca de padroes usando o algoritmo.\n"
+                 "-a, --algorithm algorithm name:\tRealiza a busca de padroes usando o algoritmo fornecido.\n"
+                 "Algoritmos disponíveis:\n"
+                 "sliding_window\n"
+                 "sellers\n"
+                 "shift_or\n"
+                 "kmp\n"
+                 "aho_corasick\n"
+                 "wu_manber\n"
                  "-c, --count:\tImprime apenas a quantidade total de ocorrencias do(s) padrão(ões) contidas no(s) arquivo(s) de texto.\n"
-                 "--help:\tShow help\n";
+                 "--help: Mostra estra mensagem de ajuda\n";
     exit(1);
 }
 
