@@ -37,7 +37,7 @@ void PrintHelp()
                  "aho_corasick\n"
                  "wu_manber\n"
                  "-c, --count:\tImprime apenas a quantidade total de ocorrencias do(s) padrão(ões) contidas no(s) arquivo(s) de texto.\n"
-                 "--help: Mostra estra mensagem de ajuda\n";
+                 "--help: Mostra esta mensagem de ajuda\n";
     exit(1);
 }
 
