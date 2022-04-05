@@ -28,10 +28,10 @@ public:
   std::vector<std::vector<int>> search(std::vector<std::string> patterns, std::string text, int max_error)
   {
     auto response = std::vector<std::vector<int>>();
-    int i = 0;
+    int idx = 0;
     for (auto pattern : patterns)
     {
-      auto char_mask = char_masks[i];
+      auto char_mask = char_masks[idx];
       std::vector<int> occurrences;
       int m = pattern.size();
       int n = text.size();
@@ -62,7 +62,7 @@ public:
       }
 
     response.emplace_back(occurrences);
-    i++;
+    idx++;
     }
     return response;
   }
