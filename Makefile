@@ -1,3 +1,3 @@
 build:
 	mkdir bin || true
-	g++ src/main.cpp -o bin/pmt -I src/algorithms -O2
+	g++ -O3 src/main.cpp -o bin/pmt -I src/algorithms
