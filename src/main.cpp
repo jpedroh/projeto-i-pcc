@@ -12,10 +12,12 @@
 #include <iterator>
 #include <memory>
 #include <algorithm>
+#include <sstream>
+#include <utility>
 
 struct pmt_options
 {
-    int edit;
+    int edit = 0;
     std::string pattern_file;
     std::string algorithm_name;
     bool is_count;
@@ -140,7 +142,7 @@ std::vector<std::string> get_patterns_from_options(pmt_options options)
     return patterns;
 }
 
-std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options)
+std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options, std::vector<std::string> patterns)
 {
     if (options.algorithm_name == "sliding_window")
     {
@@ -165,9 +167,41 @@ std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options
     else if (options.algorithm_name == "wu_manber")
     {
         return std::make_unique<WuManber>();
+    } 
+    else
+    {
+        if(options.edit)
+        {
+            int max_pattern = -1;
+            for(std::string pattern : patterns) max_pattern = std::max(max_pattern, (int)pattern.size());
+
+            if(max_pattern > 64)
+            {
+                return std::make_unique<Sellers>();
+            }
+            else
+            {
+                return std::make_unique<WuManber>();
+            }
+        }
+        else
+        {
+            if(patterns.size() > 1)
+            {
+                return std::make_unique<AhoCorasick>(); 
+            } 
+            else if(patterns[0].size() > 64)
+            {
+                return std::make_unique<SlidingWindow>();
+            } 
+            else
+            {
+                return std::make_unique<ShiftOr>();
+            }
+        }
     }
 
-    return std::make_unique<SlidingWindow>();
+    return nullptr;
 }
 
 int main(int argc, char **argv)
@@ -186,7 +220,7 @@ int main(int argc, char **argv)
     }
 
     auto patterns = get_patterns_from_options(options);
-    auto algorithm = get_search_algorithm_from_options(options);
+    auto algorithm = get_search_algorithm_from_options(options, patterns);
 
     // Faz a busca efetivamente
     std::vector<std::string> lines;
