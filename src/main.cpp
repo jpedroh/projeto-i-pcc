@@ -15,6 +15,8 @@
 #include <sstream>
 #include <utility>
 
+using namespace std;
+
 struct pmt_options
 {
     int edit = 0;
@@ -63,12 +65,12 @@ std::vector<std::string> parse_files_from_glob(std::string pattern)
 
 pmt_options ProcessArgs(int argc, char **argv)
 {
-    const char *const short_opts = "e:p:a:c:h";
+    const char* const short_opts = "e:p:a:ch";
     const option long_opts[] = {
         {"edit", required_argument, nullptr, 'e'},
         {"pattern", required_argument, nullptr, 'p'},
         {"algorithm", required_argument, nullptr, 'a'},
-        {"count", required_argument, nullptr, 'c'},
+        {"count", no_argument, nullptr, 'c'},
         {"help", no_argument, nullptr, 'h'}};
     struct pmt_options options = {0, "", "", false, false, ""};
 
@@ -86,7 +88,7 @@ pmt_options ProcessArgs(int argc, char **argv)
         {
         case 'e':
             args += 2;
-            options.edit = std::stoi(optarg);
+            options.edit = stoi(optarg);
             break;
         case 'p':
             args += 2;
