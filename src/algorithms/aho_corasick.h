@@ -4,12 +4,14 @@
 #include <unordered_map>
 #include <queue>
 
+using namespace std;
+
 class AhoCorasick : public Algorithm
 {
 public:
-  void initialize(std::vector<std::string> patterns, int max_error)
+  void initialize(vector<string> patterns, int max_error)
   {
-    std::vector<std::vector<int>> occurrences;
+    vector<vector<int>> occurrences;
 
     auto go_to_out = make_go_to(patterns, &occurrences);
     auto fail_out = make_fail(patterns, go_to_out, &occurrences);
@@ -21,9 +23,9 @@ public:
     };
   };
 
-  std::vector<std::vector<int>> search(std::vector<std::string> patterns, std::string text, int max_error)
+  vector<vector<int>> search(vector<string> patterns, string text, int max_error)
   {
-    std::vector<std::vector<int>> occurrences;
+    vector<vector<int>> occurrences;
     occurrences.resize(patterns.size());
     int n = text.size();
     int cur = 0;
@@ -51,18 +53,18 @@ public:
 private:
   struct FSM
   {
-    std::vector<std::unordered_map<char, int>> go_to;
-    std::vector<std::vector<int>> occurrences;
-    std::vector<int> fail;
+    vector<unordered_map<char, int>> go_to;
+    vector<vector<int>> occurrences;
+    vector<int> fail;
   };
 
   FSM fsm;
 
-  std::vector<std::unordered_map<char, int>> make_go_to(std::vector<std::string> patterns, std::vector<std::vector<int>> *occurrences)
+  vector<unordered_map<char, int>> make_go_to(vector<string> patterns, vector<vector<int>> *occurrences)
   {
-    std::vector<std::unordered_map<char, int>> go_to;
-    go_to.push_back(std::unordered_map<char, int>());
-    occurrences->push_back(std::vector<int>());
+    vector<unordered_map<char, int>> go_to;
+    go_to.push_back(unordered_map<char, int>());
+    occurrences->push_back(vector<int>());
 
     auto cur = 0;
     auto next = 1;
@@ -85,8 +87,8 @@ private:
       {
         c = pattern[j];
         go_to[cur][c] = next;
-        go_to.push_back(std::unordered_map<char, int>());
-        occurrences->push_back(std::vector<int>());
+        go_to.push_back(unordered_map<char, int>());
+        occurrences->push_back(vector<int>());
         cur = next;
         j++;
         next++;
@@ -98,12 +100,12 @@ private:
     return go_to;
   }
 
-  std::vector<int> make_fail(std::vector<std::string> patterns, std::vector<std::unordered_map<char, int>> go_to, std::vector<std::vector<int>> *occurrences)
+  vector<int> make_fail(vector<string> patterns, vector<unordered_map<char, int>> go_to, vector<vector<int>> *occurrences)
   {
-    std::vector<int> fail;
+    vector<int> fail;
     fail.resize(go_to.size());
-    std::fill(fail.begin(), fail.end(), -1);
-    std::queue<int> queue;
+    fill(fail.begin(), fail.end(), -1);
+    queue<int> queue;
 
     for (auto node : go_to[0])
     {

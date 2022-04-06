@@ -1,20 +1,21 @@
 #include <algorithm.h>
 #include <vector>
-#include <bitset>
 #include <string>
+
+using namespace std;
 
 class ShiftOr : public Algorithm
 {
 private:
-  std::vector<std::vector<unsigned long long>> char_masks;
+  vector<vector<unsigned long long>> char_masks;
 
 public:
-  void initialize(std::vector<std::string> patterns, int max_error)
+  void initialize(vector<string> patterns, int max_error)
   {
     for (auto pattern : patterns)
     {
       int m = pattern.size();
-      auto char_mask = std::vector<unsigned long long>(128, ~0LLU);
+      auto char_mask = vector<unsigned long long>(128, ~0LLU);
 
       for (int j = 0; j < m; j++)
       {
@@ -25,14 +26,14 @@ public:
     }
   };
 
-  std::vector<std::vector<int>> search(std::vector<std::string> patterns, std::string text, int max_error)
+  vector<vector<int>> search(vector<string> patterns, string text, int max_error)
   {
-    auto response = std::vector<std::vector<int>>();
+    auto response = vector<vector<int>>();
     int idx = 0;
     for (auto pattern : patterns)
     {
       auto char_mask = char_masks[idx];
-      std::vector<int> occurrences;
+      vector<int> occurrences;
       int m = pattern.size();
       int n = text.size();
 

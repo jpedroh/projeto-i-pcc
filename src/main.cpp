@@ -20,17 +20,17 @@ using namespace std;
 struct pmt_options
 {
     int edit = 0;
-    std::string pattern_file;
-    std::string algorithm_name;
+    string pattern_file;
+    string algorithm_name;
     bool is_count;
     bool is_help;
-    std::string pattern;
-    std::vector<std::string> files;
+    string pattern;
+    vector<string> files;
 };
 
 void PrintHelp()
 {
-    std::cout << "-e,--edit:\tLocaliza todas as ocorrencias aproximadas do padrão a uma distância de edição máxima\n"
+    cout << "-e,--edit:\tLocaliza todas as ocorrencias aproximadas do padrão a uma distância de edição máxima\n"
                  "-p, --pattern patternfile:\tRealiza a busca de todos os padroes contidos no arquivo pattern-file.\n"
                  "-a, --algorithm algorithm name:\tRealiza a busca de padroes usando o algoritmo fornecido.\n"
                  "Algoritmos disponíveis:\n"
@@ -45,11 +45,11 @@ void PrintHelp()
     exit(1);
 }
 
-std::vector<std::string> parse_files_from_glob(std::string pattern)
+vector<string> parse_files_from_glob(string pattern)
 {
     glob_t globbuf;
     int err = glob(pattern.c_str(), 0, NULL, &globbuf);
-    std::vector<std::string> files;
+    vector<string> files;
     if (err == 0)
     {
         for (size_t i = 0; i < globbuf.gl_pathc; i++)
@@ -125,18 +125,18 @@ pmt_options ProcessArgs(int argc, char **argv)
     return options;
 }
 
-std::vector<std::string> get_patterns_from_options(pmt_options options)
+vector<string> get_patterns_from_options(pmt_options options)
 {
-    std::vector<std::string> patterns;
+    vector<string> patterns;
     if (options.pattern_file == "")
     {
         patterns.emplace_back(options.pattern);
     }
     else
     {
-        std::ifstream file(options.pattern_file);
-        std::string line;
-        for (std::string line; std::getline(file, line);)
+        ifstream file(options.pattern_file);
+        string line;
+        for (string line; getline(file, line);)
         {
             patterns.emplace_back(line);
         }
@@ -144,61 +144,61 @@ std::vector<std::string> get_patterns_from_options(pmt_options options)
     return patterns;
 }
 
-std::unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options, std::vector<std::string> patterns)
+unique_ptr<Algorithm> get_search_algorithm_from_options(pmt_options options, vector<string> patterns)
 {
     if (options.algorithm_name == "sliding_window")
     {
-        return std::make_unique<SlidingWindow>();
+        return make_unique<SlidingWindow>();
     }
     else if (options.algorithm_name == "sellers")
     {
-        return std::make_unique<Sellers>();
+        return make_unique<Sellers>();
     }
     else if (options.algorithm_name == "shift_or")
     {
-        return std::make_unique<ShiftOr>();
+        return make_unique<ShiftOr>();
     }
     else if (options.algorithm_name == "kmp")
     {
-        return std::make_unique<KMP>();
+        return make_unique<KMP>();
     }
     else if (options.algorithm_name == "aho_corasick")
     {
-        return std::make_unique<AhoCorasick>();
+        return make_unique<AhoCorasick>();
     }
     else if (options.algorithm_name == "wu_manber")
     {
-        return std::make_unique<WuManber>();
+        return make_unique<WuManber>();
     } 
     else
     {
         if(options.edit)
         {
             int max_pattern = -1;
-            for(std::string pattern : patterns) max_pattern = std::max(max_pattern, (int)pattern.size());
+            for(string pattern : patterns) max_pattern = max(max_pattern, (int)pattern.size());
 
             if(max_pattern > 64)
             {
-                return std::make_unique<Sellers>();
+                return make_unique<Sellers>();
             }
             else
             {
-                return std::make_unique<WuManber>();
+                return make_unique<WuManber>();
             }
         }
         else
         {
             if(patterns.size() > 1)
             {
-                return std::make_unique<AhoCorasick>(); 
+                return make_unique<AhoCorasick>(); 
             } 
             else if(patterns[0].size() > 64)
             {
-                return std::make_unique<SlidingWindow>();
+                return make_unique<SlidingWindow>();
             } 
             else
             {
-                return std::make_unique<ShiftOr>();
+                return make_unique<ShiftOr>();
             }
         }
     }
@@ -225,13 +225,13 @@ int main(int argc, char **argv)
     auto algorithm = get_search_algorithm_from_options(options, patterns);
 
     // Faz a busca efetivamente
-    std::vector<std::string> lines;
+    vector<string> lines;
     int count = 0;
     algorithm->initialize(patterns, options.edit);
     for (auto file_name : options.files)
     {
-        std::ifstream file(file_name);
-        std::string line;
+        ifstream file(file_name);
+        string line;
         while (getline(file, line))
         {
             auto line_occurrences = algorithm->search(patterns, line, options.edit);
@@ -248,13 +248,13 @@ int main(int argc, char **argv)
 
     if (options.is_count)
     {
-        std::cout << count << std::endl;
+        cout << count << endl;
         return 0;
     }
 
     for (auto line : lines)
     {
-        std::cout << line << std::endl;
+        cout << line << endl;
     }
 
     return 0;

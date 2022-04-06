@@ -2,20 +2,22 @@
 #include <vector>
 #include <string>
 
+using namespace std;
+
 class KMP : public Algorithm
 {
 private:
-  std::vector<std::vector<int>> nexts;
+  vector<vector<int>> nexts;
 
 public:
-  void initialize(std::vector<std::string> patterns, int max_error)
+  void initialize(vector<string> patterns, int max_error)
   {
     for (auto pattern : patterns)
     {
       int m = pattern.size();
-      std::vector<int> next;
+      vector<int> next;
       next.resize(m + 1);
-      std::fill(next.begin(), next.end(), 0);
+      fill(next.begin(), next.end(), 0);
       next[0] = -1;
       int i = 1, j = 0;
 
@@ -27,19 +29,19 @@ public:
           next[i + j] = j;
         }
         i += j - next[j];
-        j = std::max(0, next[j]);
+        j = max(0, next[j]);
       }
       nexts.emplace_back(next);
     }
   };
-  std::vector<std::vector<int>> search(std::vector<std::string> patterns, std::string text, int max_error)
+  vector<vector<int>> search(vector<string> patterns, string text, int max_error)
   {
-    auto response = std::vector<std::vector<int>>();
+    auto response = vector<vector<int>>();
     int idx = 0;
     for (auto pattern : patterns)
     {
       auto next = nexts[idx];
-      std::vector<int> occurrences;
+      vector<int> occurrences;
       int m = pattern.size();
       int n = text.size();
       int i = 0, j = 0;
@@ -55,7 +57,7 @@ public:
           occurrences.push_back(i);
         }
         i += j - next[j];
-        j = std::max(0, next[j]);
+        j = max(0, next[j]);
       }
 
       response.emplace_back(occurrences);

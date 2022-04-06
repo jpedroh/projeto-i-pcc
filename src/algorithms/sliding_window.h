@@ -2,17 +2,19 @@
 #include <vector>
 #include <string>
 
+using namespace std;
+
 class SlidingWindow : public Algorithm
 {
 public:
-  void initialize(std::vector<std::string> patterns, int max_error){};
-  std::vector<std::vector<int>> search(std::vector<std::string> patterns, std::string text, int max_error)
+  void initialize(vector<string> patterns, int max_error){};
+  vector<vector<int>> search(vector<string> patterns, string text, int max_error)
   {
-    auto response = std::vector<std::vector<int>>();
-    // std::cout << patterns.size() << '\t' << '\t' << text << std::endl;
+    auto response = vector<vector<int>>();
+    // cout << patterns.size() << '\t' << '\t' << text << endl;
     for (auto pattern : patterns)
     {
-      std::vector<int> occurrences;
+      vector<int> occurrences;
       int m = pattern.size();
       int n = text.size();
 
