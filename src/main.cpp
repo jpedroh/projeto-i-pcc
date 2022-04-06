@@ -30,9 +30,10 @@ struct pmt_options
 
 void PrintHelp()
 {
-    cout << "-e,--edit:\tLocaliza todas as ocorrencias aproximadas do padrão a uma distância de edição máxima\n"
+    cout << "-e, --edit max_error:\t\tLocaliza todas as ocorrencias aproximadas do padrão a uma distância de edição máxima\n"
                  "-p, --pattern patternfile:\tRealiza a busca de todos os padroes contidos no arquivo pattern-file.\n"
-                 "-a, --algorithm algorithm name:\tRealiza a busca de padroes usando o algoritmo fornecido.\n"
+                 "-c, --count:\t\t\tImprime apenas a quantidade total de ocorrencias dos padrões contidas nos textos.\n"
+                 "-a, --algorithm algorithm_name:\tRealiza a busca de padroes usando o algoritmo fornecido.\n"
                  "Algoritmos disponíveis:\n"
                  "sliding_window\n"
                  "sellers\n"
@@ -40,7 +41,6 @@ void PrintHelp()
                  "kmp\n"
                  "aho_corasick\n"
                  "wu_manber\n"
-                 "-c, --count:\tImprime apenas a quantidade total de ocorrencias do(s) padrão(ões) contidas no(s) arquivo(s) de texto.\n"
                  "--help: Mostra esta mensagem de ajuda\n";
     exit(1);
 }
